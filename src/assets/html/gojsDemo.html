@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>拓扑图</title>
+  <base href="/">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+
+  <script type="text/javascript" src="./assets/js/base/jquery-3.1.1.min.js"></script>
+  <script type="text/javascript" src="./assets/js/base/angular.min.js"></script>
+
+
+  <script type="text/javascript" src="./assets/js/base/go-debug.js"></script>
+
+  <link rel="stylesheet" href="./assets/js/base/DebugInspector.css"/>
+  <script type="text/javascript" src="./assets/js/base/DebugInspector.js"></script>
+  <script type="text/javascript" src="./assets/js/base/ExtendedBrush.js"></script>
+
+  <link rel="stylesheet" href="./assets/js/base/DataInspector.css"/>
+  <script type="text/javascript" src="./assets/js/base/DataInspector.js"></script>
+
+
+  <link rel="stylesheet" href="./assets/css/contextMenu.css"/>
+
+  <!--<script type="text/javascript" src="./assets/js/demo.js"></script>-->
+</head>
+<body ng-app="gojsApp">
+
+<div ng-controller="gojsCtrl" ng-cloak>
+
+
+  <!--<div id='map' style='width: 400px; height: 700px;'></div>-->
+  <!--<script>-->
+  <!--mapboxgl.accessToken = 'pk.eyJ1Ijoic29kZHlnbyIsImEiOiJjajBxdDE3MjEwMXVhMzNtd3J0em11YjJsIn0.HQ3Mu5SpqaOmr8awN4163w';-->
+  <!--var map = new mapboxgl.Map({-->
+  <!--container: 'map',-->
+  <!--style: 'mapbox://styles/mapbox/satellite-streets-v9'-->
+  <!--});-->
+  <!--</script>-->
+
+
+  <div style="margin: 2px;">
+    <!--初始化-->
+    <button type="button" class="btn btn-primary" ng-click="init()">初始化</button>
+    <!--布局改变-->
+    <button type="button" class="btn btn-primary" ng-disabled="true">布局改变</button>
+    <select ng-model="layout" ng-change="changeLayout()">
+      <option value="ForceDirectedLayout" selected>ForceDirectedLayout</option>
+      <option value="LayeredDigraphLayout">LayeredDigraphLayout</option>
+      <option value="TreeLayout">TreeLayout</option>
+      <option value="CircularLayout">CircularLayout</option>
+      <option value="GridLayout">GridLayout</option>
+    </select>
+  </div>
+
+
+  <div style="position: relative;">
+
+
+
+        <span style="display: inline-block; vertical-align: top;">
+      <div style="margin-left: 10px;">
+        <div id="myDiagramDiv"
+             style="border: solid 1px black; width:1200px; height:500px;background-color: #2b669a">
+
+        </div>
+      </div>
+    </span>
+    <span style="display: inline-block; vertical-align: top;">
+      Selected Part:<br/>
+      <div id="myInspectorDiv" class="inspector"> </div><br/>
+      First Node's data:<br/>
+      <div id="myInspectorDiv2" class="inspector"> </div><br/>
+      Model.modelData:<br/>
+      <div id="myInspectorDiv3" class="inspector"> </div><br/>
+    </span>
+
+    <div id="contextMenu">
+      <ul>
+        <li id="cut" onclick="cxcommand(event)"><a href="#" target="_self">Cut</a></li>
+        <li id="copy" onclick="cxcommand(event)"><a href="#" target="_self">Copy</a></li>
+        <li id="paste" onclick="cxcommand(event)"><a href="#" target="_self">Paste</a></li>
+        <li id="delete" onclick="cxcommand(event)"><a href="#" target="_self">Delete</a></li>
+        <li id="color" class="hasSubMenu"><a href="#" target="_self">Color</a>
+          <ul class="subMenu" id="colorSubMenu">
+            <li style="background: crimson;" onclick="cxcommand(event, 'color')"><a href="#" target="_self">Red</a>
+            </li>
+            <li style="background: chartreuse;" onclick="cxcommand(event, 'color')"><a href="#"
+                                                                                       target="_self">Green</a>
+            </li>
+            <li style="background: aquamarine;" onclick="cxcommand(event, 'color')"><a href="#"
+                                                                                       target="_self">Blue</a>
+            </li>
+            <li style="background: gold;" onclick="cxcommand(event, 'color')"><a href="#" target="_self">Yellow</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+
+  </div>
+
+  <button id="SaveButton" onclick="save()">Save</button>
+  <button onclick="load()">Load</button>
+
+  <textarea id="mySavedModel" style="width:100%;height:300px">
+{ "class": "go.GraphLinksModel",
+  "nodeDataArray": [
+{"key":1, "text":"今天是张三值班维护主机", "name":"核心1", "type":"1", "loc":"500 500"},
+{"key":2, "text":"今天是张三值班维护主机", "name":"核心2", "type":"1", "loc":"550 650"},
+{"key":3, "text":"今天是张三值班维护主机", "name":"防火墙1", "type":"2", "loc":"150 100"},
+{"key":4, "text":"今天是张三值班维护主机", "name":"防火墙2", "type":"2", "loc":"150 150"},
+{"key":5, "text":"今天是张三值班维护主机", "name":"防火墙3", "type":"2", "loc":"200 200"},
+{"key":6, "text":"今天是张三值班维护主机", "name":"防火墙4", "type":"2", "loc":"100 200"},
+{"key":7, "text":"今天是张三值班维护主机", "name":"防火墙5", "type":"2", "loc":"140 130"},
+{"key":8, "text":"今天是张三值班维护主机", "name":"防火墙6", "type":"2", "loc":"230 240"},
+{"key":9, "text":"今天是张三值班维护主机", "name":"服务器1", "type":"3", "loc":"120 160"},
+{"key":10, "text":"今天是张三值班维护主机", "name":"服务器2", "type":"3", "loc":"230 330"},
+{"key":11, "text":"今天是张三值班维护主机", "name":"服务器3", "type":"3", "loc":"200 340"},
+{"key":12, "text":"今天是张三值班维护主机", "name":"服务器4", "type":"3", "loc":"250 210"},
+{"key":13, "text":"今天是张三值班维护主机", "name":"服务器5", "type":"3", "loc":"120 190"},
+{"key":14, "text":"今天是张三值班维护主机", "name":"服务器6", "type":"3", "loc":"200 190"},
+{"key":15, "text":"今天是张三值班维护主机", "name":"服务器7", "type":"3", "loc":"320 330"},
+{"key":16, "text":"今天是张三值班维护主机", "name":"交换机1", "type":"1", "loc":"230 430"},
+{"key":17, "text":"今天是张三值班维护主机", "name":"交换机2", "type":"1", "loc":"220 130"},
+{"key":18, "text":"今天是张三值班维护主机", "name":"交换机3", "type":"1", "loc":"410 220"},
+{"key":19, "text":"今天是张三值班维护主机", "name":"交换机4", "type":"1", "loc":"320 320"},
+{"key":20, "text":"今天是张三值班维护主机", "name":"灾备1", "type":"3", "loc":"410 480"},
+{"key":21, "text":"今天是张三值班维护主机", "name":"灾备2", "type":"3", "loc":"460 590"},
+{"key":22, "text":"今天是张三值班维护主机", "name":"服务器8", "type":"3", "loc":"140 190"},
+{"key":45, "text":"测试区", "name":"背景框框", "type":null, "loc":""},
+{"key":46, "text":"外联区", "name":"背景框框", "type":null, "loc":""},
+{"key":47, "text":"网络核心", "name":"背景框框", "type":null, "loc":""},
+{"key":48, "text":"运行管理区", "name":"背景框框", "type":null, "loc":""},
+{"key":49, "text":"核心生产区", "name":"背景框框", "type":null, "loc":""},
+{"key":-1, "text":"其他生产区", "name":"背景框框", "type":null, "loc":""},
+{"category":"token", "at":12, "color":"green", "key":-29, "next":47, "frac":0.6800000000000004},
+{"category":"token", "at":4, "color":"blue", "key":-30, "next":17, "frac":0.6800000000000004},
+{"category":"token", "at":9, "color":"yellow", "key":-31, "next":48, "frac":0.6800000000000004},
+{"category":"token", "at":22, "color":"purple", "key":-32, "next":8, "frac":0.6800000000000004},
+{"category":"token", "at":12, "color":"red", "key":-33, "next":6, "frac":0.6800000000000004},
+{"category":"token", "at":17, "color":"black", "key":-34, "next":12, "frac":0.6800000000000004},
+{"category":"token", "at":17, "color":"green", "key":-35, "next":11, "frac":0.6800000000000004},
+{"category":"token", "at":10, "color":"blue", "key":-36, "next":5, "frac":0.6800000000000004},
+{"category":"token", "at":15, "color":"yellow", "key":-37, "next":7, "frac":0.6800000000000004},
+{"category":"token", "at":45, "color":"purple", "key":-38, "next":20, "frac":0.6800000000000004},
+{"category":"token", "at":9, "color":"red", "key":-39, "next":19, "frac":0.6800000000000004}
+ ],
+  "linkDataArray": [
+{"from":1, "to":3, "text":"represent", "color":null},
+{"from":1, "to":4, "text":"is", "color":null},
+{"from":1, "to":5, "text":"is", "color":null},
+{"from":1, "to":6, "text":"is", "color":null},
+{"from":1, "to":7, "text":"includes", "color":null},
+{"from":2, "to":3, "text":"necessary\nfor", "color":null},
+{"from":2, "to":4, "text":"necessary\nfor", "color":null},
+{"from":2, "to":5, "text":"combine\ntoform", "color":null},
+{"from":2, "to":6, "text":"include", "color":null},
+{"from":2, "to":7, "text":"are", "color":null},
+{"from":2, "to":8, "text":"are", "color":null},
+{"from":5, "to":9, "text":"are", "color":null},
+{"from":3, "to":16, "text":"are", "color":null},
+{"from":3, "to":16, "text":"maybe", "color":null},
+{"from":4, "to":17, "text":"in", "color":null},
+{"from":5, "to":18, "text":"in", "color":null},
+{"from":6, "to":19, "text":"begin\nwith", "color":null},
+{"from":16, "to":22, "text":"with", "color":null},
+{"from":16, "to":10, "text":"with", "color":null},
+{"from":17, "to":11, "text":"aids", "color":null},
+{"from":17, "to":12, "text":"show", "color":null},
+{"from":18, "to":13, "text":"begins\nwith", "color":null},
+{"from":18, "to":14, "text":"between", "color":null},
+{"from":19, "to":15, "text":"test", "color":"text"},
+{"from":20, "to":21, "text":"灾备", "color":null},
+{"from":21, "to":20, "text":"灾备", "color":null}
+ ]}
+</textarea>
+
+</div>
+
+</body>
+</html>

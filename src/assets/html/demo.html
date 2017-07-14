@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>网络拓扑图 Demo</title>
+</head>
+<body>
+
+<h1>demo</h1>
+
+
+<div>
+      <span style="display: inline-block; vertical-align: top;">
+      <div id="sample" style="margin-left: 10px;">
+        <div id="myDiagramDiv"
+             style="border: solid 1px black; width:1200px; height:500px;background-color: #2b669a">
+
+        </div>
+      </div>
+    </span>
+
+  <div id="contextMenu">
+    <ul>
+      <li id="cut" (click)="cxcommand($event)"><a href="javascript:void(0);" target="_self">Cut</a></li>
+      <li id="copy" (click)="cxcommand($event)"><a href="javascript:void(0);" target="_self">Copy</a></li>
+      <li id="paste" (click)="cxcommand($event)"><a href="javascript:void(0);" target="_self">Paste</a></li>
+      <li id="delete" (click)="cxcommand($event)"><a href="javascript:void(0);" target="_self">Delete</a></li>
+      <li id="color" class="hasSubMenu"><a href="javascript:void(0);" target="_self">Color</a>
+        <ul class="subMenu" id="colorSubMenu">
+          <li style="background: crimson;" (click)="cxcommand($event, 'color')"><a href="javascript:void(0);"
+                                                                                   target="_self">Red</a>
+          </li>
+          <li style="background: chartreuse;" (click)="cxcommand($event, 'color')"><a href="javascript:void(0);"
+                                                                                      target="_self">Green</a>
+          </li>
+          <li style="background: aquamarine;" (click)="cxcommand($event, 'color')"><a href="javascript:void(0);"
+                                                                                      target="_self">Blue</a>
+          </li>
+          <li style="background: gold;" (click)="cxcommand($event, 'color')"><a href="javascript:void(0);"
+                                                                                target="_self">Yellow</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+
+  <div>
+    <button id="SaveButton" (click)="save()">Save</button>
+    <button (click)="load()">Load</button>
+
+    <textarea id="mySavedModel" style="width:100%;height:300px" [(ngModel)]="dataJson">
+{ "class": "go.GraphLinksModel",
+  "nodeDataArray": [
+{"key":1, "name":"小企业移动办公", "text":"one", "color":"lightyellow", "picture":"/assets/img/1.png", "loc":"-171.239672521869 -88.53583711319172"},
+{"key":2, "name":"信贷", "text":"two", "color":"brown", "picture":"/assets/img/1.png", "loc":"-82.47940371679994 71.0126730271219"},
+{"key":3, "name":"ECIF", "text":"three", "color":"green", "picture":"/assets/img/1.png", "loc":"-334.7136249238403 36.57834910598116"},
+{"key":4, "name":"互联网统一支付平台", "text":"four", "color":"slateblue", "picture":"/assets/img/1.png", "loc":"156.91447111591216 15.177839123444613"},
+{"key":5, "name":"电子验印", "text":"five", "color":"aquamarine", "picture":"/assets/img/1.png", "loc":"36.17734869781302 -120.16923546901727"},
+{"key":6, "name":"集中作业", "text":"six", "color":"lightgreen", "picture":"/assets/img/1.png", "loc":"264.35032626028544 -278.23674461282064"},
+{"key":7, "name":"总账", "text":"seven", "picture":"/assets/img/1.png", "loc":"461.73633442667597 -416.2516094237338"}
+ ],
+  "linkDataArray": [
+{"from":5, "to":6, "color":"orange"},
+{"from":1, "to":2, "color":"red"},
+{"from":1, "to":3, "color":"blue"},
+{"from":1, "to":4, "color":"goldenrod"},
+{"from":2, "to":5, "color":"fuchsia"},
+{"from":3, "to":5, "color":"green"},
+{"from":4, "to":5, "color":"black"},
+{"from":6, "to":7}
+ ]}
+</textarea>
+  </div>
+</div>
+</body>
+</html>
